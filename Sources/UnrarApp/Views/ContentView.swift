@@ -31,7 +31,7 @@ struct ContentView: View {
         .dropDestination(for: URL.self) { urls, _ in
             let supported = urls.filter(ArchiveTypes.isSupported)
             guard !supported.isEmpty else {
-                model.errorMessage = String(localized: "Only RAR archives can be opened.")
+                model.errorMessage = String(localized: "This file type is not supported.")
                 return false
             }
             open(supported)

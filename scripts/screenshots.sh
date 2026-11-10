@@ -6,6 +6,9 @@ OUT=build/screenshots
 mkdir -p "$OUT" build/demo
 cp Tests/ArchiveKitTests/Fixtures/simple.rar "build/demo/Tài liệu dự án.rar"
 cp Tests/ArchiveKitTests/Fixtures/password-headers.rar "build/demo/Bảo mật.rar"
+cp Tests/ArchiveKitTests/Fixtures/simple.7z "build/demo/Ảnh chuyến đi.7z"
+cp Tests/ArchiveKitTests/Fixtures/simple.tar.gz "build/demo/source-code.tar.gz"
+cp Tests/ArchiveKitTests/Fixtures/password-aes.zip "build/demo/Hợp đồng.zip"
 swiftc -O scripts/window-id.swift -o build/window-id
 
 shot() { # name, lang, [file]
@@ -32,6 +35,9 @@ shot 1-welcome vi
 shot 2-browser vi "build/demo/Tài liệu dự án.rar"
 shot 3-password vi "build/demo/Bảo mật.rar"
 shot 4-browser-en en "build/demo/Tài liệu dự án.rar"
+shot 5-7z vi "build/demo/Ảnh chuyến đi.7z"
+shot 6-targz vi "build/demo/source-code.tar.gz"
+shot 7-zip-password vi "build/demo/Hợp đồng.zip"
 pkill -x Unrar
 
 # Small JPEG copies for quick viewing.

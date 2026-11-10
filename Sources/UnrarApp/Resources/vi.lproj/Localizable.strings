@@ -1,7 +1,7 @@
 /* Vietnamese strings for Unrar. Keys are the English source strings. */
 
 "Unrar" = "Unrar";
-"A modern RAR extractor for macOS" = "Trình giải nén RAR hiện đại cho macOS";
+"A modern archive extractor for macOS" = "Trình giải nén hiện đại cho macOS";
 "About" = "Giới thiệu";
 "After extraction" = "Sau khi giải nén";
 "Archive" = "Tệp nén";
@@ -27,8 +27,8 @@
 "Create a folder named after the archive" = "Tạo thư mục mang tên tệp nén";
 "Destination" = "Nơi lưu";
 "Dismiss" = "Đóng";
-"Don’t create it when the archive has a single top-level folder" = "Không tạo nếu tệp nén chỉ chứa một thư mục gốc";
-"Drop a RAR archive here" = "Thả tệp RAR vào đây";
+"Don’t create it when the archive has a single top-level item" = "Không tạo nếu tệp nén chỉ chứa một mục ở gốc";
+"Drop an archive here" = "Thả tệp nén vào đây";
 "Empty folder" = "Thư mục trống";
 "Enclosing Folder" = "Thư mục cha";
 "Encrypted" = "Đã mã hóa";
@@ -93,7 +93,7 @@
 "Encrypted file names" = "Tên tệp được mã hóa";
 "Recovery record" = "Bản ghi khôi phục";
 "Locked" = "Đã khóa";
-"Supports RAR 1.5 – RAR 7, encrypted and multi-part archives" = "Hỗ trợ RAR 1.5 – RAR 7, tệp có mật khẩu và tệp nhiều phần";
+"RAR, ZIP, 7z, TAR, GZ, BZ2, XZ and more · encrypted and multi-part archives" = "RAR, ZIP, 7z, TAR, GZ, BZ2, XZ… · hỗ trợ mật khẩu và tệp nhiều phần";
 "Test" = "Kiểm tra";
 "Test Archive" = "Kiểm tra tệp nén";
 "Verify the integrity of the archive" = "Kiểm tra tính toàn vẹn của tệp nén";
@@ -103,7 +103,7 @@
 "The operation was cancelled." = "Thao tác đã bị hủy.";
 "The password is incorrect." = "Mật khẩu không đúng.";
 "This archive is protected by a password." = "Tệp nén này được bảo vệ bằng mật khẩu.";
-"This file is not a RAR archive or uses an unsupported format." = "Tệp này không phải tệp RAR hoặc dùng định dạng chưa được hỗ trợ.";
+"This file is not an archive or uses an unsupported format." = "Tệp này không phải tệp nén hoặc dùng định dạng chưa được hỗ trợ.";
 "To “%@”" = "Vào “%@”";
 "To “%@” · %lld existing files skipped" = "Vào “%@” · bỏ qua %lld tệp đã tồn tại";
 "UnRAR library version %lld" = "Thư viện UnRAR phiên bản %lld";
@@ -115,7 +115,7 @@
 "%lld of %lld selected" = "Đã chọn %1$lld / %2$lld";
 "“%@” is protected by a password." = "“%@” được bảo vệ bằng mật khẩu.";
 "Something went wrong" = "Đã xảy ra lỗi";
-"Only RAR archives can be opened." = "Chỉ có thể mở tệp nén RAR.";
+"This file type is not supported." = "Loại tệp này chưa được hỗ trợ.";
 "Next to the archive" = "Cạnh tệp nén";
 "In a fixed folder" = "Trong một thư mục cố định";
 "Ask every time" = "Luôn hỏi";
@@ -126,3 +126,9 @@
 "None" = "Chưa chọn";
 "%lld files · %@" = "%lld tệp · %@";
 "%@/s · %@ left" = "%1$@/s · còn %2$@";
+
+/* Other formats (libarchive) */
+"libarchive version %@" = "Thư viện libarchive phiên bản %@";
+"ZIP, 7z, TAR, GZ, BZ2, XZ and other formats are read with libarchive (BSD license)." = "ZIP, 7z, TAR, GZ, BZ2, XZ và các định dạng khác được đọc bằng libarchive (giấy phép BSD).";
+"This archive uses an encryption method that is not supported yet." = "Tệp nén này dùng kiểu mã hóa chưa được hỗ trợ (ví dụ 7z có mật khẩu).";
+"The archive could not be read: %@" = "Không đọc được tệp nén: %@";

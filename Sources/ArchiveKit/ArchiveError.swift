@@ -18,6 +18,10 @@ public enum ArchiveError: Error, Equatable, Sendable {
     case missingVolume(name: String)
     case cancelled
     case outOfMemory
+    /// The archive uses encryption this app cannot decrypt (for example encrypted 7z).
+    case unsupportedEncryption
+    /// Error reported by libarchive, with its (English) message.
+    case failed(message: String)
     case unknown(code: Int32)
 
     static func from(code: Int32, path: String? = nil) -> ArchiveError {
@@ -57,7 +61,7 @@ extension ArchiveError: LocalizedError {
         case .brokenArchive:
             return L("The archive is damaged.")
         case .notAnArchive:
-            return L("This file is not a RAR archive or uses an unsupported format.")
+            return L("This file is not an archive or uses an unsupported format.")
         case .cannotOpen:
             return L("The archive could not be opened.")
         case .cannotCreate(let path):
@@ -73,6 +77,10 @@ extension ArchiveError: LocalizedError {
             return L("The operation was cancelled.")
         case .outOfMemory:
             return L("Not enough memory.")
+        case .unsupportedEncryption:
+            return L("This archive uses an encryption method that is not supported yet.")
+        case .failed(let message):
+            return String(format: L("The archive could not be read: %@"), message)
         case .unknown(let code):
             return String(format: L("Unknown error (%ld)."), Int(code))
         }

@@ -52,6 +52,21 @@ jobs:
         with:
           name: Unrar-app
           path: build/Unrar.zip
+      - name: Publish GitHub release (used by the Homebrew cask)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          version=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" Sources/UnrarApp/Info.plist)
+          tag="v$version"
+          shasum -a 256 build/Unrar.zip
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release upload "$tag" build/Unrar.zip --clobber
+          else
+            gh release create "$tag" build/Unrar.zip --title "Unrar $version" --target "$GITHUB_SHA" \
+              --notes "Unrar $version for macOS 14+ (Apple Silicon + Intel). Install with Homebrew: \`brew install --cask quyvu01/unrar/unrar-app\`"
+          fi
 
   linux:
     name: ArchiveKit on Linux
@@ -59,5 +74,7 @@ jobs:
     container: swift:6.0-noble
     steps:
       - uses: actions/checkout@v4
+      - name: Install libarchive
+        run: apt-get update && apt-get install -y libarchive-dev
       - name: Run tests
         run: swift test
