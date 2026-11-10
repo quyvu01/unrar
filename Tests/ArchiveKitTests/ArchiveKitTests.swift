@@ -43,6 +43,7 @@ final class ArchiveKitTests: XCTestCase {
         XCTAssertFalse(hello.isDirectory)
         XCTAssertEqual(hello.modificationDate, Date(timeIntervalSince1970: 1_714_564_800))
         XCTAssertTrue(info.entries.first { $0.path == "docs" }!.isDirectory)
+        XCTAssertEqual(info.formatName, "RAR 5")
     }
 
     func testSolidFlag() throws {

@@ -74,7 +74,7 @@ extension ArchiveError: LocalizedError {
         case .outOfMemory:
             return L("Not enough memory.")
         case .unknown(let code):
-            return String(format: L("Unknown error (%d)."), Int(code))
+            return String(format: L("Unknown error (%ld)."), Int(code))
         }
     }
 }

@@ -19,6 +19,8 @@ public struct ArchiveEntry: Identifiable, Hashable, Sendable {
     public let method: UInt32
     public let hostOS: UInt32
     public let dictionarySize: UInt64
+    /// Version of the algorithm needed to unpack (e.g. 29 = RAR 3/4, 50 = RAR 5, 70 = RAR 7).
+    public let unpackVersion: UInt32
 
     public var id: Int { index }
 
@@ -47,7 +49,8 @@ public struct ArchiveEntry: Identifiable, Hashable, Sendable {
     public init(index: Int, path: String, uncompressedSize: UInt64, compressedSize: UInt64,
                 isDirectory: Bool, isEncrypted: Bool = false, isSolid: Bool = false,
                 isLink: Bool = false, modificationDate: Date? = nil, crc32: UInt32 = 0,
-                method: UInt32 = 0, hostOS: UInt32 = 0, dictionarySize: UInt64 = 0) {
+                method: UInt32 = 0, hostOS: UInt32 = 0, dictionarySize: UInt64 = 0,
+                unpackVersion: UInt32 = 0) {
         self.index = index
         self.path = path
         self.uncompressedSize = uncompressedSize
@@ -61,6 +64,7 @@ public struct ArchiveEntry: Identifiable, Hashable, Sendable {
         self.method = method
         self.hostOS = hostOS
         self.dictionarySize = dictionarySize
+        self.unpackVersion = unpackVersion
     }
 }
 
@@ -79,6 +83,18 @@ public struct ArchiveInfo: Sendable {
     public var fileCount: Int { entries.filter { !$0.isDirectory }.count }
     public var totalUncompressedSize: UInt64 { entries.reduce(0) { $0 + $1.uncompressedSize } }
     public var totalCompressedSize: UInt64 { entries.reduce(0) { $0 + $1.compressedSize } }
+
+    /// Human readable format, derived from the highest unpack version used.
+    public var formatName: String {
+        let version = entries.filter { !$0.isDirectory }.map(\.unpackVersion).max() ?? 0
+        switch version {
+        case 70...: return "RAR 7"
+        case 50...: return "RAR 5"
+        case 29...: return "RAR 4"
+        case 1...: return "RAR 2"
+        default: return "RAR"
+        }
+    }
 }
 
 /// What to do when a file being extracted already exists.

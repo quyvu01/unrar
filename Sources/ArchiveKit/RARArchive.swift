@@ -272,7 +272,8 @@ public struct RARArchive: Sendable {
             crc32: h.crc32,
             method: h.method,
             hostOS: h.host_os,
-            dictionarySize: h.dictionary_size
+            dictionarySize: h.dictionary_size,
+            unpackVersion: h.unpack_version
         )
     }
 }
