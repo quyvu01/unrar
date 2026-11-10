@@ -22,6 +22,14 @@ jobs:
         run: swift test
       - name: Build Unrar.app (universal)
         run: scripts/build-app.sh
+      - name: Screenshots
+        continue-on-error: true
+        run: scripts/screenshots.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: build/screenshots/*.png
       - name: Package
         run: ditto -c -k --keepParent build/Unrar.app build/Unrar.zip
       - uses: actions/upload-artifact@v4
