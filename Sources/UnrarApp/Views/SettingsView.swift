@@ -51,7 +51,7 @@ private struct ExtractionSettingsView: View {
                 }
 
                 Toggle("Create a folder named after the archive", isOn: $createSubfolder)
-                Toggle("Don’t create it when the archive has a single top-level folder", isOn: $avoidDoubleFolder)
+                Toggle("Don’t create it when the archive has a single top-level item", isOn: $avoidDoubleFolder)
                     .disabled(!createSubfolder)
             }
 
@@ -82,15 +82,20 @@ private struct AboutView: View {
                 VStack(alignment: .leading) {
                     Text("Unrar")
                         .font(.title2.weight(.semibold))
-                    Text("A modern RAR extractor for macOS")
+                    Text("A modern archive extractor for macOS")
                         .foregroundStyle(.secondary)
                     Text("UnRAR library version \(RARArchive.libraryVersion)")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                    Text("libarchive version \(GenericArchive.libraryVersion)")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                 }
             }
             Divider()
             Text("RAR decompression is provided by the UnRAR source code by Alexander Roshal.")
+                .font(.callout)
+            Text("ZIP, 7z, TAR, GZ, BZ2, XZ and other formats are read with libarchive (BSD license).")
                 .font(.callout)
             ScrollView {
                 Text(unrarLicenseNotice)

@@ -28,6 +28,7 @@ if [[ -f Sources/UnrarApp/Resources/AppIcon.icns ]]; then
   cp Sources/UnrarApp/Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 fi
 cp Sources/CUnrar/unrar/license.txt "$APP/Contents/Resources/UnRAR-License.txt"
+cp Sources/CArchive/LICENSE "$APP/Contents/Resources/libarchive-License.txt"
 
 echo "▸ Signing (ad hoc)"
 codesign --force --deep --sign - "$APP"

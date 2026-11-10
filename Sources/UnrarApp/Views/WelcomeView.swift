@@ -40,7 +40,7 @@ struct WelcomeView: View {
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isDropTargeted)
 
             VStack(spacing: 6) {
-                Text("Drop a RAR archive here")
+                Text("Drop an archive here")
                     .font(.title2.weight(.semibold))
                 Text("Browse its contents, extract everything or just the files you need.")
                     .font(.callout)
@@ -58,7 +58,7 @@ struct WelcomeView: View {
             .controlSize(.large)
             .keyboardShortcut(.defaultAction)
 
-            Text("Supports RAR 1.5 – RAR 7, encrypted and multi-part archives")
+            Text("RAR, ZIP, 7z, TAR, GZ, BZ2, XZ and more · encrypted and multi-part archives")
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }

@@ -150,6 +150,8 @@ struct FileTableView: View {
     var body: some View {
         let nodes = model.visibleNodes
         let isSearching = !model.searchText.isEmpty
+        // ZIP, 7z, TAR … do not expose per-file compressed sizes.
+        let hasPackedSizes = model.info?.hasPackedSizes ?? true
 
         Table(of: ArchiveNode.self, selection: $model.selection, sortOrder: $model.sortOrder) {
             TableColumn("Name", value: \.name) { node in
@@ -165,14 +167,14 @@ struct FileTableView: View {
             .width(min: 64, ideal: 86)
 
             TableColumn("Packed", value: \.compressedSize) { node in
-                Text(Format.bytes(node.compressedSize))
+                Text(hasPackedSizes ? Format.bytes(node.compressedSize) : "–")
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             }
             .width(min: 64, ideal: 86)
 
             TableColumn("Ratio") { node in
-                Text(Format.ratio(node))
+                Text(hasPackedSizes ? Format.ratio(node) : "–")
                     .monospacedDigit()
                     .foregroundStyle(.secondary)
             }

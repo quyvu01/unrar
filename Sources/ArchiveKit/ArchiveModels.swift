@@ -78,14 +78,44 @@ public struct ArchiveInfo: Sendable {
     public let isLocked: Bool
     public let hasRecoveryRecord: Bool
     public let comment: String?
+    /// Format label such as "ZIP" or "TAR.GZ". nil for RAR, where it is derived
+    /// from the unpack versions (see `formatName`).
+    public let formatLabel: String?
+    /// Whether entries carry their compressed size (RAR does, libarchive formats do not).
+    public let hasPackedSizes: Bool
+    /// Whether entries carry RAR specific details (CRC32, method).
+    public let isRAR: Bool
+    /// Size of the archive file(s) on disk.
+    public let archiveSize: UInt64
+
+    public init(url: URL, entries: [ArchiveEntry], isSolid: Bool = false, isMultiVolume: Bool = false,
+                hasEncryptedHeaders: Bool = false, isLocked: Bool = false, hasRecoveryRecord: Bool = false,
+                comment: String? = nil, formatLabel: String? = nil, hasPackedSizes: Bool = true,
+                isRAR: Bool = true, archiveSize: UInt64 = 0) {
+        self.url = url
+        self.entries = entries
+        self.isSolid = isSolid
+        self.isMultiVolume = isMultiVolume
+        self.hasEncryptedHeaders = hasEncryptedHeaders
+        self.isLocked = isLocked
+        self.hasRecoveryRecord = hasRecoveryRecord
+        self.comment = comment
+        self.formatLabel = formatLabel
+        self.hasPackedSizes = hasPackedSizes
+        self.isRAR = isRAR
+        self.archiveSize = archiveSize
+    }
 
     public var hasEncryptedEntries: Bool { hasEncryptedHeaders || entries.contains { $0.isEncrypted } }
     public var fileCount: Int { entries.filter { !$0.isDirectory }.count }
     public var totalUncompressedSize: UInt64 { entries.reduce(0) { $0 + $1.uncompressedSize } }
-    public var totalCompressedSize: UInt64 { entries.reduce(0) { $0 + $1.compressedSize } }
+    public var totalCompressedSize: UInt64 {
+        hasPackedSizes ? entries.reduce(0) { $0 + $1.compressedSize } : archiveSize
+    }
 
-    /// Human readable format, derived from the highest unpack version used.
+    /// Human readable format. For RAR it is derived from the highest unpack version used.
     public var formatName: String {
+        if let formatLabel { return formatLabel }
         let version = entries.filter { !$0.isDirectory }.map(\.unpackVersion).max() ?? 0
         switch version {
         case 70...: return "RAR 7"

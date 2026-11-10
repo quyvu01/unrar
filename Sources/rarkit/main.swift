@@ -1,7 +1,7 @@
 import ArchiveKit
 import Foundation
 
-// Small command line front end for ArchiveKit, mostly used for testing.
+// Small command line front end (RAR, ZIP, 7z, TAR …) for ArchiveKit, mostly used for testing.
 //
 //   rarkit list    <archive> [-p password]
 //   rarkit extract <archive> <destination> [-p password] [--skip|--overwrite]
@@ -26,14 +26,14 @@ guard arguments.count >= 2 else {
     fail("usage: rarkit list|extract|test <archive> [destination] [-p password] [--skip|--overwrite]")
 }
 
-let archive = RARArchive(url: URL(fileURLWithPath: arguments[1]))
+let archive = Archives.reader(for: URL(fileURLWithPath: arguments[1]))
 let formatter = ByteCountFormatter()
 
 do {
     switch arguments[0] {
     case "list":
         let info = try archive.readInfo(password: password)
-        print("Archive: \(info.url.lastPathComponent)  solid=\(info.isSolid) volume=\(info.isMultiVolume) encryptedHeaders=\(info.hasEncryptedHeaders)")
+        print("Archive: \(info.url.lastPathComponent)  format=\(info.formatName)  solid=\(info.isSolid) volume=\(info.isMultiVolume) encryptedHeaders=\(info.hasEncryptedHeaders)")
         if let comment = info.comment { print("Comment: \(comment)") }
         for entry in info.entries {
             let kind = entry.isDirectory ? "D" : (entry.isLink ? "L" : "F")
@@ -48,19 +48,19 @@ do {
         let selection = arguments.count > 3 ? Set(arguments[3...]) : nil
         var lastPercent = -1
         let result = try archive.extract(paths: selection, to: destination, password: password,
-                                         options: ExtractionOptions(overwrite: policy)) { progress in
+                                         options: ExtractionOptions(overwrite: policy), progress: { progress in
             let percent = Int(progress.fractionCompleted * 100)
             if percent != lastPercent {
                 lastPercent = percent
                 FileHandle.standardError.write("\r\(percent)% \(progress.currentPath ?? "")\u{1B}[K".data(using: .utf8)!)
             }
             return true
-        }
+        })
         FileHandle.standardError.write("\n".data(using: .utf8)!)
         print("Extracted \(result.extracted.count) items (\(formatter.string(fromByteCount: Int64(result.bytesWritten)))), skipped \(result.skipped.count)")
 
     case "test":
-        try archive.test(password: password)
+        try archive.test(password: password, progress: nil)
         print("OK")
 
     default:

@@ -35,21 +35,25 @@ struct ArchiveInfoView: View {
                 }
 
                 Section("Properties") {
-                    flag("Solid archive", info.isSolid)
+                    if info.isRAR { flag("Solid archive", info.isSolid) }
                     flag("Encrypted files", info.entries.contains { $0.isEncrypted })
                     flag("Encrypted file names", info.hasEncryptedHeaders)
                     flag("Multi-part archive", info.isMultiVolume)
-                    flag("Recovery record", info.hasRecoveryRecord)
-                    flag("Locked", info.isLocked)
+                    if info.isRAR {
+                        flag("Recovery record", info.hasRecoveryRecord)
+                        flag("Locked", info.isLocked)
+                    }
                 }
 
                 if let selected = selectedEntry {
                     Section("Selected item") {
                         LabeledContent("Name", value: selected.name)
                         LabeledContent("Size", value: Format.bytes(selected.uncompressedSize))
-                        LabeledContent("Packed", value: Format.bytes(selected.compressedSize))
+                        if info.hasPackedSizes {
+                            LabeledContent("Packed", value: Format.bytes(selected.compressedSize))
+                        }
                         LabeledContent("Modified", value: Format.date(selected.modificationDate))
-                        if !selected.isDirectory {
+                        if !selected.isDirectory, info.isRAR {
                             LabeledContent("CRC32", value: String(format: "%08X", selected.crc32))
                             LabeledContent("Method", value: selected.methodName)
                         }

@@ -41,7 +41,7 @@ final class ArchiveViewModel {
     // MARK: Archive
 
     private(set) var state: LoadState = .empty
-    private(set) var archive: RARArchive?
+    private(set) var archive: (any ArchiveReader)?
     private(set) var info: ArchiveInfo?
     private(set) var root: ArchiveNode?
     private(set) var password: String?
@@ -121,7 +121,7 @@ final class ArchiveViewModel {
         state = .loading(url)
         errorMessage = nil
         completion = nil
-        let archive = RARArchive(url: url)
+        let archive = Archives.reader(for: url)
         task = Task {
             let result = await Task.detached(priority: .userInitiated) { () -> Result<ArchiveInfo, Error> in
                 Result { try archive.readInfo(password: password) }
@@ -221,23 +221,21 @@ final class ArchiveViewModel {
             return nil
         }
         guard settings.createSubfolder else { return base }
-        if settings.avoidDoubleFolder, let root, Self.hasSingleTopLevelFolder(root) {
+        if settings.avoidDoubleFolder, let root, Self.hasSingleTopLevelItem(root) {
             return base
         }
         return base.appendingPathComponent(Self.archiveStem(archive.url), isDirectory: true)
     }
 
-    static func hasSingleTopLevelFolder(_ root: ArchiveNode) -> Bool {
-        root.children.count == 1 && root.children[0].isDirectory
+    /// A single folder or a single file at the top (e.g. "notes.txt.gz") needs
+    /// no extra folder around it.
+    static func hasSingleTopLevelItem(_ root: ArchiveNode) -> Bool {
+        root.children.count == 1
     }
 
-    /// "Movie.part1.rar" -> "Movie", "Photos.rar" -> "Photos".
+    /// "Movie.part1.rar" -> "Movie", "Photos.tar.gz" -> "Photos".
     static func archiveStem(_ url: URL) -> String {
-        var name = url.deletingPathExtension().lastPathComponent
-        if let range = name.range(of: #"\.part\d+$"#, options: [.regularExpression, .caseInsensitive]) {
-            name.removeSubrange(range)
-        }
-        return name.isEmpty ? "Archive" : name
+        Archives.stem(of: url)
     }
 
     func extract(paths: Set<String>?, to destination: URL, stripPrefix: String?, settings: ExtractionSettings) {
@@ -382,7 +380,8 @@ final class ArchiveViewModel {
                 Result {
                     try archive.extract(paths: [path], to: folder, password: password,
                                         options: ExtractionOptions(overwrite: .overwrite,
-                                                                   stripPrefix: parentPath.isEmpty ? nil : parentPath))
+                                                                   stripPrefix: parentPath.isEmpty ? nil : parentPath),
+                                        progress: nil)
                     return folder.appendingPathComponent(name)
                 }
             }.value
@@ -418,7 +417,8 @@ final class ArchiveViewModel {
             do {
                 try archive.extract(paths: [path], to: folder, password: password,
                                     options: ExtractionOptions(overwrite: .overwrite,
-                                                               stripPrefix: parentPath.isEmpty ? nil : parentPath))
+                                                               stripPrefix: parentPath.isEmpty ? nil : parentPath),
+                                    progress: nil)
                 completion(folder.appendingPathComponent(name), false, nil)
             } catch {
                 completion(nil, false, error)

@@ -36,7 +36,14 @@ var targets: [Target] = [
             .linkedLibrary("pthread", .when(platforms: [.linux])),
         ]
     ),
-    .target(name: "ArchiveKit", dependencies: ["CUnrar"]),
+    // ZIP, 7z, TAR, GZ, BZ2, XZ … via libarchive: the system library on macOS
+    // (/usr/lib/libarchive.2.dylib), libarchive-dev on Linux.
+    .systemLibrary(
+        name: "CArchive",
+        path: "Sources/CArchive",
+        providers: [.apt(["libarchive-dev"])]
+    ),
+    .target(name: "ArchiveKit", dependencies: ["CUnrar", "CArchive"]),
     .executableTarget(name: "rarkit", dependencies: ["ArchiveKit"]),
     .testTarget(
         name: "ArchiveKitTests",

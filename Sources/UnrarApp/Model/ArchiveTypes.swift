@@ -7,8 +7,8 @@ enum ArchiveTypes {
     static let rar = UTType(importedAs: "com.rarlab.rar-archive", conformingTo: .archive)
 
     static var openable: [UTType] {
-        var types: [UTType] = [rar]
-        for ext in RARArchive.fileExtensions {
+        var types: [UTType] = [rar, .zip, .gzip, .bz2, .archive]
+        for ext in Archives.fileExtensions.sorted() {
             if let type = UTType(filenameExtension: ext), !types.contains(type) { types.append(type) }
         }
         return types
@@ -16,9 +16,6 @@ enum ArchiveTypes {
 
     /// Whether a dropped / opened file looks like something we can read.
     static func isSupported(_ url: URL) -> Bool {
-        if RARArchive.fileExtensions.contains(url.pathExtension.lowercased()) { return true }
-        // Old style volumes: .r00, .r01, ...
-        if url.pathExtension.range(of: #"^r\d\d$"#, options: [.regularExpression, .caseInsensitive]) != nil { return true }
-        return RARArchive.hasRARSignature(url)
+        Archives.isSupported(url)
     }
 }
