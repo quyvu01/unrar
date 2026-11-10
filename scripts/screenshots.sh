@@ -34,11 +34,11 @@ shot 3-password vi "build/demo/Bảo mật.rar"
 shot 4-browser-en en "build/demo/Tài liệu dự án.rar"
 pkill -x Unrar
 
-# Print small JPEG versions into the log so they can be retrieved without artifacts.
+# Small JPEG copies for quick viewing.
 for f in "$OUT"/*.png; do
   j="${f%.png}.jpg"
   sips -s format jpeg -s formatOptions 70 -Z 1200 "$f" --out "$j" >/dev/null
-  echo "=====BEGIN $(basename "$j")====="
-  base64 -b 120 -i "$j"
-  echo "=====END $(basename "$j")====="
+
+
+
 done
