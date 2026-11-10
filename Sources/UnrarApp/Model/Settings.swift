@@ -104,7 +104,7 @@ enum Format {
 
     static func date(_ date: Date?) -> String {
         guard let date else { return "–" }
-        return date.formatted(date: .abbreviated, time: .shortened)
+        return date.formatted(date: .numeric, time: .shortened)
     }
 
     static func duration(_ seconds: TimeInterval) -> String {

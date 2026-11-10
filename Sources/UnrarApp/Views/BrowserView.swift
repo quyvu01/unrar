@@ -155,7 +155,7 @@ struct FileTableView: View {
             TableColumn("Name", value: \.name) { node in
                 NodeNameCell(node: node, showsLocation: isSearching)
             }
-            .width(min: 180, ideal: 340)
+            .width(min: 160, ideal: 280)
 
             TableColumn("Size", value: \.uncompressedSize) { node in
                 Text(Format.bytes(node.uncompressedSize))
@@ -182,7 +182,7 @@ struct FileTableView: View {
                 Text(Format.date(node.modificationDate))
                     .foregroundStyle(.secondary)
             }
-            .width(min: 110, ideal: 150)
+            .width(min: 100, ideal: 130)
         } rows: {
             ForEach(nodes) { node in
                 TableRow(node)
