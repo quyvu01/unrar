@@ -126,6 +126,15 @@ public struct ExtractionProgress: Sendable {
     public var totalFiles: Int
     public var currentPath: String?
 
+    public init(bytesProcessed: UInt64 = 0, totalBytes: UInt64 = 0, filesProcessed: Int = 0,
+                totalFiles: Int = 0, currentPath: String? = nil) {
+        self.bytesProcessed = bytesProcessed
+        self.totalBytes = totalBytes
+        self.filesProcessed = filesProcessed
+        self.totalFiles = totalFiles
+        self.currentPath = currentPath
+    }
+
     public var fractionCompleted: Double {
         guard totalBytes > 0 else { return totalFiles > 0 ? Double(filesProcessed) / Double(totalFiles) : 0 }
         return min(1, Double(bytesProcessed) / Double(totalBytes))
@@ -138,4 +147,6 @@ public struct ExtractionResult: Sendable {
     /// Entries skipped because the destination already existed.
     public var skipped: [String] = []
     public var bytesWritten: UInt64 = 0
+
+    public init() {}
 }
